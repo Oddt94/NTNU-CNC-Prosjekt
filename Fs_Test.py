@@ -1,14 +1,17 @@
 import cv2
 
+img = cv2.imread("Resources/shapes.png")
+original_dim = img.shape
+original_hight = original_dim[0]
+original_width = original_dim[1]
 
-vid = cv2.VideoCapture(0)
+print("Original image hight: ", original_hight)
+print("Original image widht:", original_width)
 
-while True:
-    ret, frame = vid.read()
 
-    cv2.imshow("frame", frame)
+cv2.imshow("Original", img)
 
-    if cv2.waitKey(1) & 0xFF  == ord('q'):
-        break
-vid.release()
+
+
+cv2.waitKey(0)
 cv2.destroyAllWindows()
