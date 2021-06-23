@@ -1,6 +1,6 @@
 import cv2
 
-img = cv2.imread("Resources/shapes.png", 1)
+img = cv2.imread('shapes.png', 1)
 
 while True:
     cv2.namedWindow('image', cv2.WINDOW_NORMAL)
