@@ -1,6 +1,5 @@
 import cv2
 
-
 # Opplærings vvvv
 # https://www.geeksforgeeks.org/changing-the-contrast-and-brightness-of-an-image-using-python-opencv/
 
@@ -14,9 +13,9 @@ def Brightnesscontrast(brightness=0):
 
 
 def controller(img, brightness=255, contrast=127):
-    brightness = int((brightness - 0) * (255 - (-255)) / (510 - 0) + (-255))
-
-    contrast = int((contrast - 0) * (127 - (-127)) / (254 - 0) + (-127))
+    brightness = int(brightness * (255*2) / (255*2) + (-255))
+    print(brightness)
+    contrast = int(contrast * (127*2) / (127*2) + (-127))
 
     if brightness != 0:
 
