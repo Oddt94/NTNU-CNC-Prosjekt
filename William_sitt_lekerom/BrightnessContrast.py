@@ -1,18 +1,19 @@
 import cv2
 
+
 # Opplærings vvvv
 # https://www.geeksforgeeks.org/changing-the-contrast-and-brightness-of-an-image-using-python-opencv/
 
 
 def Brightnesscontrast(brightness=0):
     brightness = cv2.getTrackbarPos("Brightness", "Image")
-    contrast = cv2.getTrackbarPos("Brightness", "Image")
+    contrast = cv2.getTrackbarPos("Contrast", "Image")
     effect = controller(img, brightness, contrast)
 
     cv2.imshow("Effect", effect)
 
 
-def controller(img, brightness=255,contrast=127):
+def controller(img, brightness=255, contrast=127):
     brightness = int((brightness - 0) * (255 - (-255)) / (510 - 0) + (-255))
 
     contrast = int((contrast - 0) * (127 - (-127)) / (254 - 0) + (-127))
@@ -60,21 +61,21 @@ def controller(img, brightness=255,contrast=127):
 
     return cal
 
-if __name__ == '__main__': #Guarded Script
+
+if __name__ == '__main__':  # Guarded Script
     original = cv2.imread("lena.png")
     img = original.copy()
 
     cv2.namedWindow("Image")
     cv2.imshow("Image", original)
 
-    #Trackbar(trackbars, window_name, value, count, onchange)"
-    #Brightness range -255 to 255
-    cv2.createTrackbar("Brightness", "Image", 255, 2*255, Brightnesscontrast)
+    # Trackbar(trackbars, window_name, value, count, onchange)"
+    # Brightness range -255 to 255
+    cv2.createTrackbar("Brightness", "Image", 255, 2 * 255, Brightnesscontrast)
 
     # Contrast range -127 to 127
-    cv2.createTrackbar("Contrast", "Image", 127, 2*127, Brightnesscontrast)
+    cv2.createTrackbar("Contrast", "Image", 127, 2 * 127, Brightnesscontrast)
 
     Brightnesscontrast(0)
 
     cv2.waitKey(0)
-
