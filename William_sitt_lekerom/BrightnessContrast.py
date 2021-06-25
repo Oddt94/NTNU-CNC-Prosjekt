@@ -61,7 +61,7 @@ def controller(img, brightness=255,contrast=127):
     return cal
 
 if __name__ == '__main__': #Guarded Script
-    original = cv2.imread("shapes.png")
+    original = cv2.imread("lena.png")
     img = original.copy()
 
     cv2.namedWindow("Image")
