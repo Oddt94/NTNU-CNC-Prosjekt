@@ -14,7 +14,6 @@ def Brightnesscontrast(brightness=0):
 
 def controller(img, brightness=255, contrast=127):
     brightness = int(brightness * (255*2) / (255*2) + (-255))
-    print(brightness)
     contrast = int(contrast * (127*2) / (127*2) + (-127))
 
     if brightness != 0:
@@ -61,7 +60,7 @@ def controller(img, brightness=255, contrast=127):
     return cal
 
 
-if __name__ == '__main__':  # Guarded Script
+if __name__ == '__main__':
     original = cv2.imread("lena.png")
     img = original.copy()
 
