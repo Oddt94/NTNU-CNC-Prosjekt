@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-cap = cv2.imread("Bordtest.png", 1)
+cap = cv2.imread("Bordtest2.jpg", 1)
 
 contrast = 1
 brightness = 0
