@@ -2,7 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-image = cv2.imread("William_sitt_lekerom/shapes.png", 1)
+image = cv2.imread("William_sitt_lekerom/CameraTest.jpg", 1)
 
 # convert the image to grayscale format
 img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -20,6 +20,7 @@ contours, hierarchy = cv2.findContours(image=thresh, mode=cv2.RETR_TREE, method=
 
 # draw contours on the original image
 image_copy = image.copy()
+
 cv2.drawContours(image=image_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                  lineType=cv2.LINE_AA)
 
@@ -46,7 +47,7 @@ for cnt in contours:
         cy = int(M['m01'] / M['m00'])
     cx_data.append(cx)
     cy_data.append(cy)
-    # Separates out all he x and y coordinates of the contour edges
+    # Separates out all the x and y coordinates of the contour edges
     for i in range(len(cnt)):
         x.append(cnt[i][0][0])
         y.append(cnt[i][0][1])
@@ -67,3 +68,10 @@ plt.plot(cx_data, cy_data, 'go')
 plt.plot(x, y, 'rx')
 plt.show()
 
+blank_image = np.zeros((np.max(y), np.max(x), 3), np.uint8)
+cv2.drawContours(image=blank_image, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
+                 lineType=cv2.LINE_AA)
+cv2.imshow('only edge', blank_image)
+cv2.imwrite('contours_black_backdrop.jpg', blank_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
