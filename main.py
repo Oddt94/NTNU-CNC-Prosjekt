@@ -1,9 +1,10 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-
-image = cv2.imread("William_sitt_lekerom/CameraTest.jpg", 1)
-
+cam = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+ret, video_frame = cam.read()
+# image = cv2.imread("William_sitt_lekerom/CameraTest.jpg", 1)
+image = video_frame
 # convert the image to grayscale format
 img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -75,3 +76,4 @@ cv2.imshow('only edge', blank_image)
 cv2.imwrite('contours_black_backdrop.jpg', blank_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+cam.release()
