@@ -31,7 +31,7 @@ cv2.waitKey(0)
 contours, hierarchy = cv2.findContours(image=thresh, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
 
 # draw contours on the original image
-image_copy = image.copy()
+image_copy = frame.copy()
 
 cv2.drawContours(image=image_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                  lineType=cv2.LINE_AA)
