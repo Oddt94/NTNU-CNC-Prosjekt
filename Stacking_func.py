@@ -1,6 +1,11 @@
 import cv2
 import numpy as np
 
+
+# imgStack = stackImages(size, first row, second row)
+# imgStack = stackImages(0.8, ([frame, effect],[thresh, image_copy]))
+
+
 def stackImages(scale, imgArray):
     rows = len(imgArray)
     cols = len(imgArray[0])

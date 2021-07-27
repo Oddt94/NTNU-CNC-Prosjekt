@@ -63,6 +63,7 @@ plt.plot(cx_data, cy_data, 'go')
 plt.plot(x, y, 'rx')
 plt.show()
 
+# Vil ikkje lage en blank_images
 blank_image = np.zeros((np.max(y), np.max(x), 3), np.uint8)
 cv2.drawContours(image=blank_image, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                  lineType=cv2.LINE_AA)
