@@ -7,6 +7,8 @@ contrast = 1.25
 brightness = 50
 
 cap = cv2.VideoCapture(0)
+if not cap.isOpened():
+    print("Error opening video")
 ret, frame = cap.read()
 
 effect = frame.copy()
