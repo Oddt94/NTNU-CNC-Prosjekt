@@ -1,11 +1,11 @@
 import numpy as np
 import cv2
 
-cap = cv2.VideoCapture("earth.mp4")
-# cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture("earth.mp4")
+cap = cv2.VideoCapture(0)
 
 
-contrast = 1.25
+contrast = 2.2
 brightness = 50
 
 while True:
