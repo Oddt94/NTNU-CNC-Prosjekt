@@ -16,11 +16,11 @@ cap.set(4, frameHeight)
 def empty(a):
     pass
 
+
 cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
 cv2.createTrackbar("Contrast", "Output", 100, 1000, empty)
 cv2.createTrackbar("Brightness", "Output", 1400, 10000, empty)
 cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
-
 
 # Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
 # This is a bug from OpenCV, pay no attention to it.
@@ -49,17 +49,16 @@ while True:
     cv2.drawContours(image=image_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                      lineType=cv2.LINE_AA)
 
-    # blank_image = np.zeros(frame.shape)
     cv2.drawContours(image=blank_image, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                      lineType=cv2.LINE_AA)
 
     imgStack = stackImages(0.65, ([frame, blank_image],
-                                 [thresh, image_copy]))
+                                  [thresh, image_copy]))
     cv2.imshow("Output", imgStack)
 
-    if cv2.waitKey(1) & 0xFF == ord('s'):
-        cv2.imwrite("Saved_img/main_v2.png", imgStack)
-    elif cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+    elif cv2.waitKey(1) & 0xFF == ord('s'):
+        cv2.imwrite("Saved_img/main_v2.png", imgStack)
 cap.release()
 cv2.destroyAllWindows()
