@@ -13,8 +13,9 @@ def empty(a):
 
 cv2.namedWindow("Parameters")
 cv2.resizeWindow("Parameters", 640, 240)
-cv2.createTrackbar("Contrast", "Parameters", 43, 1000, empty)
-cv2.createTrackbar("Brightness", "Parameters", 1376, 10000, empty)
+cv2.createTrackbar("Contrast", "Parameters", 50, 1000, empty)
+cv2.createTrackbar("Brightness", "Parameters", 1400, 10000, empty)
+
 
 while True:
     ret, frame = cap.read()
