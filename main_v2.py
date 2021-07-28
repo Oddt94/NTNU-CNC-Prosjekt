@@ -58,7 +58,9 @@ while True:
                                  [thresh, image_copy]))
     cv2.imshow("Results", imgStack)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('s'):
+        cv2.imwrite("main_v2.png",imgStack)
+    elif cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cap.release()
 cv2.destroyAllWindows()
