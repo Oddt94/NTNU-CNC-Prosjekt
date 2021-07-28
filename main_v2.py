@@ -12,6 +12,7 @@ if not cap.isOpened():
 cap.set(3, frameWidth)
 cap.set(4, frameHeight)
 
+
 def empty(a):
     pass
 
@@ -44,19 +45,18 @@ while True:
     contours, hierarchy = cv2.findContours(image=thresh, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
 
     image_copy = effect.copy()
+    blank_image = np.zeros((frameHeight, frameWidth, 3), np.uint8)
 
     cv2.drawContours(image=image_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                      lineType=cv2.LINE_AA)
 
-    blank_image = np.zeros(frame.shape)
+    # blank_image = np.zeros(frame.shape)
     cv2.drawContours(image=blank_image, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                      lineType=cv2.LINE_AA)
 
-    imgStack = stackImages(0.8, ([frame, effect],
+    imgStack = stackImages(0.8, ([frame, blank_image],
                                  [thresh, image_copy]))
     cv2.imshow("Results", imgStack)
-# Bug: By replacing effect with blank_image (to save some screen space) causes white screen on the stack.
-    cv2.imshow("Output", blank_image)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
