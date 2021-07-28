@@ -1,5 +1,4 @@
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 from Stacking_func import stackImages
 
@@ -19,7 +18,7 @@ cv2.createTrackbar("Brightness", "Parameters", 1400, 10000, empty)
 cv2.createTrackbar("Threshold1", "Parameters", 155, 255, empty)
 
 # Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
-# Dette er en bug fra OpenCV, bare gi faen om denne.
+# This is a bug from OpenCV, pay no attention to it.
 
 while True:
     ret, frame = cap.read()
@@ -51,7 +50,7 @@ while True:
     imgStack = stackImages(0.8, ([frame, effect],
                                  [thresh, image_copy]))
     cv2.imshow("Results", imgStack)
-
+# Bug: By replacing effect with blank_image (to save some screen space) causes white screen on the stack.
     cv2.imshow("Output", blank_image)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
