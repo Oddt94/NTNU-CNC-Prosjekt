@@ -16,21 +16,20 @@ cap.set(4, frameHeight)
 def empty(a):
     pass
 
+cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
+cv2.createTrackbar("Contrast", "Output", 100, 1000, empty)
+cv2.createTrackbar("Brightness", "Output", 1400, 10000, empty)
+cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
 
-cv2.namedWindow("Parameters")
-cv2.resizeWindow('Parameters', 640, 240)
-cv2.createTrackbar("Contrast", "Parameters", 100, 1000, empty)
-cv2.createTrackbar("Brightness", "Parameters", 1400, 10000, empty)
-cv2.createTrackbar("Threshold1", "Parameters", 155, 255, empty)
 
 # Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
 # This is a bug from OpenCV, pay no attention to it.
 
 while True:
     ret, frame = cap.read()
-    Contrast = float(cv2.getTrackbarPos("Contrast", "Parameters") / 100)
-    Brightness = float(cv2.getTrackbarPos("Brightness", "Parameters") / 100)
-    Threshold_1 = cv2.getTrackbarPos("Threshold1", "Parameters")
+    Contrast = float(cv2.getTrackbarPos("Contrast", "Output") / 100)
+    Brightness = float(cv2.getTrackbarPos("Brightness", "Output") / 100)
+    Threshold_1 = cv2.getTrackbarPos("Threshold1", "Output")
 
     effect = frame.copy()
     effect = cv2.cvtColor(effect, cv2.COLOR_BGR2HSV)
@@ -54,9 +53,9 @@ while True:
     cv2.drawContours(image=blank_image, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                      lineType=cv2.LINE_AA)
 
-    imgStack = stackImages(0.8, ([frame, blank_image],
+    imgStack = stackImages(0.65, ([frame, blank_image],
                                  [thresh, image_copy]))
-    cv2.imshow("Results", imgStack)
+    cv2.imshow("Output", imgStack)
 
     if cv2.waitKey(1) & 0xFF == ord('s'):
         cv2.imwrite("main_v2.png",imgStack)
