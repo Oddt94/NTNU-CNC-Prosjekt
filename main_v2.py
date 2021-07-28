@@ -58,7 +58,7 @@ while True:
     cv2.imshow("Output", imgStack)
 
     if cv2.waitKey(1) & 0xFF == ord('s'):
-        cv2.imwrite("main_v2.png",imgStack)
+        cv2.imwrite("Saved_img/main_v2.png", imgStack)
     elif cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cap.release()
