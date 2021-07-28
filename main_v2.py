@@ -2,10 +2,15 @@ import cv2
 import numpy as np
 from Stacking_func import stackImages
 
+frameWidth = 640
+frameHeight = 480
+
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("Error opening video")
 
+cap.set(3, frameWidth)
+cap.set(4, frameHeight)
 
 def empty(a):
     pass
