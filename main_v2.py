@@ -4,7 +4,6 @@ from Stacking_func import stackImages
 
 frameWidth = 640
 frameHeight = 480
-
 paused = False
 
 cap = cv2.VideoCapture(0)
@@ -20,7 +19,6 @@ def empty(a):
 
 
 cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
-
 cv2.createTrackbar("Contrast", "Output", 100, 1000, empty)
 cv2.createTrackbar("Brightness", "Output", 1400, 10000, empty)
 cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
@@ -28,11 +26,12 @@ cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
 # Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
 # This is a bug from OpenCV, pay no attention to it.
 
+print("Press P for Pause\nPress Q for quit\nPress S for Save and Quit")
 while True:
     # If not paused - get next
-    if(not paused):
+    if not paused:
         ret, frame = cap.read()
-    
+
     Contrast = float(cv2.getTrackbarPos("Contrast", "Output") / 100)
     Brightness = float(cv2.getTrackbarPos("Brightness", "Output") / 100)
     Threshold_1 = cv2.getTrackbarPos("Threshold1", "Output")
@@ -61,14 +60,21 @@ while True:
     imgStack = stackImages(0.65, ([frame, blank_image],
                                 [thresh, image_copy]))
     cv2.imshow("Output", imgStack)
-    
+
     key_press = cv2.waitKey(1)
     if key_press & 0xFF == ord('s'):
+        print("Saving image...")
         cv2.imwrite("Saved_img/main_v2.png", imgStack)
-    elif key_press & 0xFF == ord('q'):
+        file_cont = open("./main_v2_contours.txt", "a")
+        print("Saving Contours...")
+        file_cont.write(repr(contours))
+        file_cont.close()
+        print("Quitting...")
+        break
+    elif key_press & 0xFF == ord('q') or key_press == 27:
+        print("Quitting...")
         break
     elif key_press & 0xFF == ord("p"):
         paused = not paused
-
 cap.release()
 cv2.destroyAllWindows()

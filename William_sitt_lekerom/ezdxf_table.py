@@ -1,6 +1,10 @@
 import ezdxf
 
-Contours = open("main_v2_contours.txt", "r")
+
+file_Contours = open("main_copytst2_contours.txt", "r")
+for x in file_Contours:
+  print(x)
+
 # Create a new DXF document.
 doc = ezdxf.new(dxfversion='R2010')
 
@@ -22,3 +26,4 @@ msp.add_text(
 # Save DXF document.
 doc.saveas('test.dxf')
 
+file_Contours.close()

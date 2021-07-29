@@ -5,7 +5,7 @@ from Stacking_func import stackImages
 frameWidth = 640
 frameHeight = 480
 image = True
-image_source = "Bordtest.png"
+image_source = "Triangle.png"
 camera_source = 0
 
 
@@ -58,54 +58,23 @@ while True:
 
     cv2.drawContours(image=blank_image, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                      lineType=cv2.LINE_AA)
-    for cnt in contours:
-        approx = cv2.approxPolyDP(cnt, 0.009 * cv2.arcLength(cnt, True), True)
-
-        # draws boundary of contours.
-        cv2.drawContours(frame, [approx], 0, (0, 0, 255), 5)
-
-        # Used to flatted the array containing
-        # the co-ordinates of the vertices.
-        n = approx.ravel()
-        i = 0
-
-    contours_cordinates_counter = True
-    if contours_cordinates_counter:
-        for j in n:
-            if i % 2 == 0:
-                x = n[i]
-                y = n[i + 1]
-
-                # String containing the co-ordinates.
-                string = str(x) + " " + str(y)
-
-                if i == 0:
-                    # text on topmost co-ordinate.
-                    cv2.putText(cap, "Arrow tip", (x, y),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0))
-                else:
-                    # text on remaining co-ordinates.
-                    cv2.putText(cap, string, (x, y),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
-            i = i + 1
-        contours_cordinates_counter = False
-        else
-        print("poop")
 
     imgStack = stackImages(0.65, ([frame, blank_image],
                                   [thresh, image_copy]))
     cv2.imshow("Output", imgStack)
     end_button = cv2.waitKey(1)
-    if end_button == ord('q') or end_button == 27:
-        print("Quitting...")
-        break
-    elif end_button == ord('s'):
+    if end_button == ord('s'):
         print("Saving image...")
-        cv2.imwrite("Saved_img/main_v2.png", imgStack)
-        file = open("William_sitt_lekerom/main_v2_contours.txt", "w")
+        cv2.imwrite("./main_v2.png", imgStack)
+        file_cont = open("./main_copytst2_contours.txt", "a")
         print("Saving Contours...")
-        file.write(repr(contours))
+        file_cont.write(repr(contours))
+        file_cont.close()
         print("Quitting...")
         break
-cap.release()
+    elif end_button == ord('q') or end_button == 27:
+        print("Quitting...")
+        break
 cv2.destroyAllWindows()
+if not image:
+    cap.release()
