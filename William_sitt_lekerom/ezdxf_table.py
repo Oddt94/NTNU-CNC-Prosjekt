@@ -1,9 +1,20 @@
 import ezdxf
 
 
-file_Contours = open("main_copytst2_contours.txt", "r")
-for x in file_Contours:
-  print(x)
+# file_Contours = open("main_copytst2_contours.txt", "r")
+# for x in file_Contours:
+
+#  print(x)
+line_color = {'color': 7}
+
+point_m = 0
+point_n = 0
+
+point_0 = (154, 51)
+point_1 = (769, 53)
+point_2 = (461, 501)
+
+# For en eller anan grunn da kjem trekanten oppned....hmm
 
 # Create a new DXF document.
 doc = ezdxf.new(dxfversion='R2010')
@@ -16,7 +27,9 @@ doc.layers.new('TEXTLAYER', dxfattribs={'color': 2})
 msp = doc.modelspace()
 
 # Add entities to a layout by factory methods: layout.add_...()
-msp.add_line((0, 0), (10, 0), dxfattribs={'color': 7})
+msp.add_line(point_0, point_1, line_color)
+msp.add_line(point_1, point_2, line_color)
+msp.add_line(point_2, point_0, line_color)
 msp.add_text(
     'Table Test',
     dxfattribs={
@@ -26,4 +39,4 @@ msp.add_text(
 # Save DXF document.
 doc.saveas('test.dxf')
 
-file_Contours.close()
+# file_Contours.close()

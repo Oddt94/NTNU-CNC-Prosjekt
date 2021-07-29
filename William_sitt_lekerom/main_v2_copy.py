@@ -78,3 +78,6 @@ while True:
 cv2.destroyAllWindows()
 if not image:
     cap.release()
+
+# Contours output aren't xy, it's centroids.
+# https://docs.opencv.org/4.5.2/dd/d49/tutorial_py_contour_features.html
