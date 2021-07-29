@@ -1,5 +1,6 @@
 import ezdxf
 
+Contours = open("main_v2_contours.txt", "r")
 # Create a new DXF document.
 doc = ezdxf.new(dxfversion='R2010')
 
@@ -12,9 +13,8 @@ msp = doc.modelspace()
 
 # Add entities to a layout by factory methods: layout.add_...()
 msp.add_line((0, 0), (10, 0), dxfattribs={'color': 7})
-msp.add_line((5, 1), (10, 12), dxfattribs={'color': 3})
 msp.add_text(
-    'Test',
+    'Table Test',
     dxfattribs={
         'layer': 'TEXTLAYER'
     }).set_pos((0, 0.2), align='CENTER')
