@@ -19,21 +19,17 @@ cap.set(4, frameHeight)
 def empty(a):
     pass
 
-def pauseFunc(a):
-    global paused
-    paused = not paused
-
 cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
+
 cv2.createTrackbar("Contrast", "Output", 100, 1000, empty)
 cv2.createTrackbar("Brightness", "Output", 1400, 10000, empty)
 cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
-cv2.createTrackbar("Pause", "Output", 0, 1, pauseFunc)
-
 
 # Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
 # This is a bug from OpenCV, pay no attention to it.
 
 while True:
+    # If not paused - get next
     if(not paused):
         ret, frame = cap.read()
     
@@ -66,11 +62,14 @@ while True:
     imgStack = stackImages(0.65, ([frame, blank_image],
                                 [thresh, image_copy]))
     cv2.imshow("Output", imgStack)
-
-    if cv2.waitKey(1) & 0xFF == ord('s'):
+    
+    key_press = cv2.waitKey(1)
+    if key_press & 0xFF == ord('s'):
         cv2.imwrite("Saved_img/main_v2.png", imgStack)
-    elif cv2.waitKey(1) & 0xFF == ord('q'):
+    elif key_press & 0xFF == ord('q'):
         break
+    elif key_press & 0xFF == ord("p"):
+        paused = not paused
 
 cap.release()
 cv2.destroyAllWindows()
