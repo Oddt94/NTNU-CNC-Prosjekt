@@ -10,9 +10,9 @@ line_color = {'color': 7}
 point_m = 0
 point_n = 0
 
-point_0 = (154, 51)
-point_1 = (769, 53)
-point_2 = (461, 501)
+point_0 = (155, 53)
+point_1 = (462, 500)
+point_2 = (769, 52)
 
 # For en eller anan grunn da kjem trekanten oppned....hmm
 

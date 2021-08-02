@@ -48,7 +48,6 @@ while True:
 
     ret, thresh = cv2.threshold(img_gray, Threshold_1, 255, cv2.THRESH_BINARY)
 
-    # cv2.findContours( canny_output, contours, hierarchy, Imgproc.RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
     contours, hierarchy = cv2.findContours(image=thresh, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
 
     image_copy = effect.copy()
@@ -62,13 +61,13 @@ while True:
 
     pointers_open = 0
 
-    for cnt in contours :
+    for cnt in contours:
         approx = cv2.approxPolyDP(cnt, 0.009 * cv2.arcLength(cnt, True), True)
         cv2.drawContours(image_copy, [approx], 0, (0, 0, 255), 5)
         n = approx.ravel()
 
     for j in n:
-        if (pointers_open % 2 == 0):
+        if pointers_open % 2 == 0:
             x = n[pointers_open]
             y = n[pointers_open + 1]
 
@@ -85,15 +84,15 @@ while True:
                             font, 1, (0, 255, 0))
         pointers_open = pointers_open + 1
 
-
     imgStack = stackImages(0.65, ([frame, blank_image],
                                   [thresh, image_copy]))
+
     cv2.imshow("Output", imgStack)
     end_button = cv2.waitKey(1)
     if end_button == ord('s'):
         print("Saving image...")
         cv2.imwrite("./main_v2.png", imgStack)
-        file_cont = open("./main_copytst2_contours.txt", "a")
+        file_cont = open("./main_copytst3_contours.txt", "w+")
         print("Saving Contours...")
         file_cont.write(repr(approx))
         file_cont.close()
