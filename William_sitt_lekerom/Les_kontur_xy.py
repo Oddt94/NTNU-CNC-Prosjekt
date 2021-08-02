@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-image = "Triangle.png"
+image = "1Triangle.png"
 
 # Reading image
 font = cv2.FONT_HERSHEY_COMPLEX
@@ -50,6 +50,7 @@ for cnt in contours :
         i = i + 1
 # Showing the final image.
 cv2.imshow('image2', img2)
+
 # Exiting the window if 'q' is pressed on the    keyboard.
 if cv2.waitKey(0) & 0xFF == ord('q'):
     cv2.destroyAllWindows()

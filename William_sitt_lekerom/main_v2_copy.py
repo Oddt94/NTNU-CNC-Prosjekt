@@ -5,8 +5,9 @@ from Stacking_func import stackImages
 frameWidth = 640
 frameHeight = 480
 image = True
-image_source = "Triangle.png"
+image_source = "1Triangle.png"
 camera_source = 0
+font = cv2.FONT_HERSHEY_COMPLEX
 
 
 def empty(a):
@@ -59,6 +60,32 @@ while True:
     cv2.drawContours(image=blank_image, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
                      lineType=cv2.LINE_AA)
 
+    pointers_open = 0
+
+    for cnt in contours :
+        approx = cv2.approxPolyDP(cnt, 0.009 * cv2.arcLength(cnt, True), True)
+        cv2.drawContours(image_copy, [approx], 0, (0, 0, 255), 5)
+        n = approx.ravel()
+
+    for j in n:
+        if (pointers_open % 2 == 0):
+            x = n[pointers_open]
+            y = n[pointers_open + 1]
+
+            # String containing the co-ordinates.
+            stringpos = str(x) + " " + str(y)
+
+            if pointers_open == 0:
+                # text on topmost co-ordinate.
+                cv2.putText(image_copy, stringpos, (x, y),
+                            font, 1, (0, 255, 0))
+            else:
+                # text on remaining co-ordinates.
+                cv2.putText(image_copy, stringpos, (x, y),
+                            font, 1, (0, 255, 0))
+        pointers_open = pointers_open + 1
+
+
     imgStack = stackImages(0.65, ([frame, blank_image],
                                   [thresh, image_copy]))
     cv2.imshow("Output", imgStack)
@@ -68,7 +95,7 @@ while True:
         cv2.imwrite("./main_v2.png", imgStack)
         file_cont = open("./main_copytst2_contours.txt", "a")
         print("Saving Contours...")
-        file_cont.write(repr(contours))
+        file_cont.write(repr(approx))
         file_cont.close()
         print("Quitting...")
         break
