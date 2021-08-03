@@ -6,7 +6,7 @@ frameWidth = 640
 frameHeight = 480
 image = False
 image_source = "1Triangle.png"
-camera_source = 0
+camera_source = 1
 font = cv2.FONT_HERSHEY_COMPLEX
 paused = False
 

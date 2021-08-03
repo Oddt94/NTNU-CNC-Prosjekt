@@ -37,7 +37,7 @@ def stackImages(scale, imgArray):
 frameWidth = 640
 frameHeight = 480
 paused = False
-
+calibrate = input('Do you want to calibrate y/n')
 cap = cv2.VideoCapture(1)
 if not cap.isOpened():
     print("Error opening video")
@@ -55,17 +55,27 @@ cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
 
 # Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
 # This is a bug from OpenCV, pay no attention to it.
+# for tape 6.10, 500, 128
+# for plate 1.26, 500, 128
+Contrast = 2.36
+Brightness = 0
+Threshold_1 = 85
+
+if calibrate == 'y':
+    cv2.createTrackbar("Contrast", "Output", 100, 1000, empty)
+    cv2.createTrackbar("Brightness", "Output", 1400, 10000, empty)
+    cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
 
 print("Press P for Pause\nPress Q for quit\nPress S for Save and Quit")
 while True:
     # If not paused - get next
     if not paused:
         ret, frame = cap.read()
-    #for tape 6.10, 500, 128
-    # for plate 1.26, 500, 128
-    Contrast = 6.10
-    Brightness = 500
-    Threshold_1 = 128
+
+    if calibrate == 'y':
+        Contrast = float(cv2.getTrackbarPos("Contrast", "Output") / 100)
+        Brightness = float(cv2.getTrackbarPos("Brightness", "Output") / 100)
+        Threshold_1 = cv2.getTrackbarPos("Threshold1", "Output")
 
     effect = frame.copy()
     effect = cv2.cvtColor(effect, cv2.COLOR_BGR2HSV)
@@ -80,11 +90,7 @@ while True:
 
     image_copy = effect.copy()
     blank_image = np.zeros((frameHeight, frameWidth, 3), np.uint8)
-    new_contour = []
-    for i in range(len(hierarchy[0])):
-        if hierarchy[0][i][3] != -1:
-            new_contour.append(contours[i])
-    contours = new_contour
+
 
 
     cv2.drawContours(image=image_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
@@ -99,6 +105,11 @@ while True:
     key_press = cv2.waitKey(1)
     if key_press & 0xFF == ord('s'):
         # Make the coordinate arrays
+        '''new_contour = []
+        for i in range(len(hierarchy[0])):
+            if hierarchy[0][i][3] != -1:
+                new_contour.append(contours[i])
+        contours = new_contour'''
         cx_data = []
         cy_data = []
         x = []
