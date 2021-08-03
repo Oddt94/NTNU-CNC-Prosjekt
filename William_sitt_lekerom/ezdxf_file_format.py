@@ -7,7 +7,8 @@ msp = doc.modelspace()
 
 # point_file = open("main_copytst2_contours.txt", "r")
 
-with open("main_copytst3_contours.txt", "r") as point_file:
+filename = "main_copytst3_contours.txt"
+with open(filename, "r") as point_file:
     filter = point_file.read()
     filter = filter.replace(" ", "").replace("\n\n", "\n")
     filter = filter.replace("array([", "").replace("dtype", "")

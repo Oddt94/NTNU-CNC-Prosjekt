@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-from Stacking_func import stackImages
+from functions.Stacking_func import stackImages
 
 frameWidth = 640
 frameHeight = 480
