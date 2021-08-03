@@ -4,10 +4,11 @@ from Stacking_func import stackImages
 
 frameWidth = 640
 frameHeight = 480
-image = True
+image = False
 image_source = "1Triangle.png"
 camera_source = 0
 font = cv2.FONT_HERSHEY_COMPLEX
+paused = False
 
 
 def empty(a):
@@ -33,8 +34,11 @@ cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
 # Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
 # This is a bug from OpenCV, pay no attention to it.
 
-print("Press Q for quit\nPress S for Save and Quit")
+print("Press P for Pause\nPress Q for quit\nPress S for Save and Quit")
 while True:
+    if not paused:
+        ret,frame = cap.read()
+
     Contrast = float(cv2.getTrackbarPos("Contrast", "Output") / 100)
     Brightness = float(cv2.getTrackbarPos("Brightness", "Output") / 100)
     Threshold_1 = cv2.getTrackbarPos("Threshold1", "Output")
@@ -88,8 +92,8 @@ while True:
                                   [thresh, image_copy]))
 
     cv2.imshow("Output", imgStack)
-    end_button = cv2.waitKey(1)
-    if end_button == ord('s'):
+    key_press = cv2.waitKey(1)
+    if key_press == ord('s'):
         print("Saving image...")
         cv2.imwrite("./main_v2.png", imgStack)
         file_cont = open("./main_copytst3_contours.txt", "w+")
@@ -98,9 +102,11 @@ while True:
         file_cont.close()
         print("Quitting...")
         break
-    elif end_button == ord('q') or end_button == 27:
+    elif key_press == ord('q') or key_press == 27:
         print("Quitting...")
         break
+    elif key_press & 0xFF == ord("p"):
+        paused = not paused
 cv2.destroyAllWindows()
 if not image:
     cap.release()
