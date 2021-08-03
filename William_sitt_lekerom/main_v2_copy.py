@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 from Stacking_func import stackImages
 
 frameWidth = 640
@@ -37,7 +38,7 @@ cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
 print("Press P for Pause\nPress Q for quit\nPress S for Save and Quit")
 while True:
     if not paused:
-        ret,frame = cap.read()
+        ret, frame = cap.read()
 
     Contrast = float(cv2.getTrackbarPos("Contrast", "Output") / 100)
     Brightness = float(cv2.getTrackbarPos("Brightness", "Output") / 100)
@@ -64,30 +65,25 @@ while True:
                      lineType=cv2.LINE_AA)
 
     pointers_open = 0
+    cx_data = []
+    cy_data = []
+    x = []
+    y = []
 
     for cnt in contours:
-        approx = cv2.approxPolyDP(cnt, 0.009 * cv2.arcLength(cnt, True), True)
-        cv2.drawContours(image_copy, [approx], 0, (0, 0, 255), 5)
-        n = approx.ravel()
-
-    for j in n:
-        if pointers_open % 2 == 0:
-            x = n[pointers_open]
-            y = n[pointers_open + 1]
-
-            # String containing the co-ordinates.
-            stringpos = str(x) + " " + str(y)
-
-            if pointers_open == 0:
-                # text on topmost co-ordinate.
-                cv2.putText(image_copy, stringpos, (x, y),
-                            font, 1, (0, 255, 0))
-            else:
-                # text on remaining co-ordinates.
-                cv2.putText(image_copy, stringpos, (x, y),
-                            font, 1, (0, 255, 0))
-        pointers_open = pointers_open + 1
-
+        M = cv2.moments(cnt)
+        if M["m00"] is None or M["m00"] == 0:
+            cx = 1
+            cy = 1
+        else:
+            cx = int(M['m10'] / M['m00'])
+            cy = int(M['m01'] / M['m00'])
+        cx_data.append(cx)
+        cy_data.append(cy)
+        for i in range(len(cnt)):
+            x.append(cnt[i][0][0])
+            y.append(cnt[i][0][1])
+    cxy_data = np.column_stack([cx_data, cy_data])
     imgStack = stackImages(0.65, ([frame, blank_image],
                                   [thresh, image_copy]))
 
@@ -96,10 +92,11 @@ while True:
     if key_press == ord('s'):
         print("Saving image...")
         cv2.imwrite("./main_v2.png", imgStack)
-        file_cont = open("./main_copytst3_contours.txt", "w+")
+        # file_cont = open("./main_copytst3_contours.txt", "w+")
         print("Saving Contours...")
-        file_cont.write(repr(approx))
-        file_cont.close()
+        np.savetxt("./main_copytst3_contours.txt", cxy_data, fmt=['%d', '%d'])
+        # file_cont.write(cx_data + "\n" + cy_data)
+        # file_cont.close()
         print("Quitting...")
         break
     elif key_press == ord('q') or key_press == 27:
@@ -111,5 +108,3 @@ cv2.destroyAllWindows()
 if not image:
     cap.release()
 
-# Contours output aren't xy, it's centroids.
-# https://docs.opencv.org/4.5.2/dd/d49/tutorial_py_contour_features.html
