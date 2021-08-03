@@ -19,9 +19,7 @@ def empty(a):
 
 
 cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
-cv2.createTrackbar("Contrast", "Output", 100, 1000, empty)
-cv2.createTrackbar("Brightness", "Output", 1400, 10000, empty)
-cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
+
 
 # Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
 # This is a bug from OpenCV, pay no attention to it.
@@ -32,9 +30,9 @@ while True:
     if not paused:
         ret, frame = cap.read()
 
-    Contrast = float(cv2.getTrackbarPos("Contrast", "Output") / 100)
-    Brightness = float(cv2.getTrackbarPos("Brightness", "Output") / 10)
-    Threshold_1 = cv2.getTrackbarPos("Threshold1", "Output")
+    Contrast = 6.10
+    Brightness = 500
+    Threshold_1 = 128
 
     effect = frame.copy()
     effect = cv2.cvtColor(effect, cv2.COLOR_BGR2HSV)
@@ -63,11 +61,35 @@ while True:
 
     key_press = cv2.waitKey(1)
     if key_press & 0xFF == ord('s'):
+        # Make the coordinate arrays
+        cx_data = []
+        cy_data = []
+        x = []
+        y = []
+
+        # this for loop iterates through all the contour elements found by openCV
+        for cnt in contours:
+            M = cv2.moments(cnt)
+            # Finds the centers of all contour objects
+            if M['m00'] is None or M['m00'] == 0:
+                cx = 1
+                cy = 1
+            else:
+                cx = int(M['m10'] / M['m00'])
+                cy = int(M['m01'] / M['m00'])
+            cx_data.append(cx)
+            cy_data.append(cy)
+            # Separates out all the x and y coordinates of the contour edges
+            for i in range(len(cnt)):
+                x.append(cnt[i][0][0])
+                y.append(cnt[i][0][1])
         print("Saving image...")
-        cv2.imwrite("Saved_img/main_v2.png", imgStack)
-        file_cont = open("./main_v2_contours.txt", "a")
+        cv2.imwrite("Saved_img/test_img.png", imgStack)
+        file_cont = open("./test.txt", "a")
         print("Saving Contours...")
-        file_cont.write(repr(contours))
+        for i in range(len(x)):
+            line = str(x[i]) + "," + str(y[i]) + "\n"
+            file_cont.writelines(line)
         file_cont.close()
         print("Quitting...")
         break

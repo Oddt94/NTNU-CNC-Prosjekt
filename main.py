@@ -1,7 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-cam = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 ret, video_frame = cam.read()
 # image = cv2.imread("William_sitt_lekerom/CameraTest.jpg", 1)
 image = video_frame
