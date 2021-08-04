@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1928"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="100mm_skive.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1930"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.0482005"
+     inkscape:cx="182.69406"
+     inkscape:cy="239.93501"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g2024" />
+  <defs
+     id="defs1925">
+    <marker
+       id="DistanceX"
+       orient="auto"
+       refX="0.0"
+       refY="0.0"
+       style="overflow:visible">
+      <path
+         d="M 3,-3 L -3,3 M 0,-5 L  0,5"
+         style="stroke:#000000; stroke-width:0.5"
+         id="path1997" />
+    </marker>
+    <pattern
+       id="Hatch"
+       patternUnits="userSpaceOnUse"
+       width="8"
+       height="8"
+       x="0"
+       y="0">
+      <path
+         d="M8 4 l-4,4"
+         stroke="#000000"
+         stroke-width="0.25"
+         linecap="square"
+         id="path2000" />
+      <path
+         d="M6 2 l-4,4"
+         stroke="#000000"
+         stroke-width="0.25"
+         linecap="square"
+         id="path2002" />
+      <path
+         d="M4 0 l-4,4"
+         stroke="#000000"
+         stroke-width="0.25"
+         linecap="square"
+         id="path2004" />
+    </pattern>
+    <symbol
+       id="*Model_Space" />
+    <symbol
+       id="*Paper_Space" />
+    <symbol
+       id="*Paper_Space0" />
+  </defs>
+  <g
+     inkscape:label="Lag 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       inkscape:label="0"
+       id="g2024"
+       transform="matrix(0.26458333,0,0,0.26458333,53.902644,-207.3437)">
+      <path
+         d="m 47.244094,1122.5197 a 47.244094,47.244094 0 1 0 -94.488188,0 47.244094,47.244094 0 1 0 94.488188,0 z"
+         style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:round"
+         id="path2012" />
+      <path
+         d="m 188.97638,1122.5197 a 188.97638,188.97638 0 1 0 -377.95276,0 188.97638,188.97638 0 1 0 377.95276,0 z"
+         style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:round"
+         id="path2014" />
+      <text
+         x="-188.97638"
+         y="1315.3495"
+         style="font-size:18.269px;font-family:Arial;fill:#000000"
+         id="text2018"><tspan
+           sodipodi:role="line"
+           id="tspan2016"
+           x="-188.97638"
+           y="1315.3495" /></text>
+      <text
+         x="-188.97638"
+         y="1342.7527"
+         style="font-size:18.269px;font-family:Arial;fill:#000000"
+         id="text2022"><tspan
+           sodipodi:role="line"
+           id="tspan2020"
+           x="-188.97638"
+           y="1342.7527" /></text>
+    </g>
+  </g>
+</svg>

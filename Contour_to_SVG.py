@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import svgwrite as svg
+from svgwrite import mm
 
 # noinspection PyPep8Naming
 def stackImages(scale, imgArray):
@@ -34,6 +35,16 @@ def stackImages(scale, imgArray):
         ver = hor
     return ver
 
+def transform_pixel_to_mm(dist_px):
+    x1 = 47
+    x2 = 566
+    y1 = 0
+    y2 = 1000
+    a = (y1- y2)/(x1-x2)
+    b = y2 - a * x2
+    dist_mm = a * dist_px + b
+    return dist_mm
+
 frameWidth = 640
 frameHeight = 480
 paused = False
@@ -41,7 +52,8 @@ calibrate = input('Do you want to calibrate y/n')
 cap = cv2.VideoCapture(1)
 if not cap.isOpened():
     print("Error opening video")
-
+cap.set(cv2.CAP_PROP_AUTOFOCUS, 0)
+cap.set(cv2.CAP_PROP_BRIGHTNESS, 0)
 cap.set(3, frameWidth)
 cap.set(4, frameHeight)
 
@@ -57,16 +69,17 @@ cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
 # This is a bug from OpenCV, pay no attention to it.
 # for tape 6.10, 500, 128
 # for plate 1.26, 500, 128
-Contrast = 2.36
-Brightness = 0
-Threshold_1 = 85
+# for cloth cover background 0.69 10.55 117
+Contrast = 1
+Brightness = 62.22
+Threshold_1 = 171
 
 if calibrate == 'y':
     cv2.createTrackbar("Contrast", "Output", 100, 1000, empty)
     cv2.createTrackbar("Brightness", "Output", 1400, 10000, empty)
     cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
 
-print("Press P for Pause\nPress Q for quit\nPress S for Save and Quit")
+print("Press P for Pause\nPress Q for quit\nPress S for Save and export")
 while True:
     # If not paused - get next
     if not paused:
@@ -142,12 +155,11 @@ while True:
         sheet = svg.Drawing('sheet.svg')
         for cnt in contours:
             for i in range(len(cnt)-1):
-                sheet.add(sheet.line((int(cnt[i][0][0]), int(cnt[i][0][1])), (int(cnt[i+1][0][0]), int(cnt[i+1][0][1])), stroke=svg.rgb(0, 0, 0, '%')))
-            sheet.add(sheet.line((int(cnt[0][0][0]), int(cnt[0][0][1])), (int(cnt[-1][0][0]), int(cnt[-1][0][1])), stroke=svg.rgb(0, 0, 0, '%')))
+                sheet.add(sheet.line((transform_pixel_to_mm(int(cnt[i][0][0]))*mm, transform_pixel_to_mm(int(cnt[i][0][1]))*mm), (transform_pixel_to_mm(int(cnt[i+1][0][0]))*mm, transform_pixel_to_mm((int(cnt[i+1][0][1])))*mm), stroke=svg.rgb(0, 0, 0, '%')))
+            sheet.add(sheet.line((transform_pixel_to_mm(int(cnt[0][0][0]))*mm, transform_pixel_to_mm(int(cnt[0][0][1]))*mm), (transform_pixel_to_mm(int(cnt[-1][0][0]))*mm, transform_pixel_to_mm((int(cnt[-1][0][1])))*mm), stroke=svg.rgb(0, 0, 0, '%')))
         sheet.save()
 
-        print("Quitting...")
-        break
+
     elif key_press & 0xFF == ord('q') or key_press == 27:
         print("Quitting...")
         break
