@@ -5,7 +5,7 @@ import numpy as np;
 
 
 # Read image
-im = cv2.imread("William_sitt_lekerom/shapes.png", cv2.IMREAD_GRAYSCALE)
+im = cv2.imread("../William_sitt_lekerom/shapes.png", cv2.IMREAD_GRAYSCALE)
 cv2.imshow('Input', im)
 cv2.waitKey(0)
 # Set up the detector with default parameters.

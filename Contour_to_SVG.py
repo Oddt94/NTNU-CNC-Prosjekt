@@ -1,43 +1,41 @@
 import cv2
 import numpy as np
 import svgwrite as svg
-from svgwrite import mm
 
-
-# noinspection PyPep8Naming
-def stackImages(scale, imgArray):
-    rows = len(imgArray)
-    cols = len(imgArray[0])
-    rowsAvailable = isinstance(imgArray[0], list)
-    width = imgArray[0][0].shape[1]
-    height = imgArray[0][0].shape[0]
+# function for creating stacked images in one display window
+def stackImages(scale, img_array):
+    rows = len(img_array)
+    cols = len(img_array[0])
+    rowsAvailable = isinstance(img_array[0], list)
+    width = img_array[0][0].shape[1]
+    height = img_array[0][0].shape[0]
     if rowsAvailable:
         for x in range(0, rows):
             for y in range(0, cols):
-                if imgArray[x][y].shape[:2] == imgArray[0][0].shape[:2]:
-                    imgArray[x][y] = cv2.resize(imgArray[x][y], (0, 0), None, scale, scale)
+                if img_array[x][y].shape[:2] == img_array[0][0].shape[:2]:
+                    img_array[x][y] = cv2.resize(img_array[x][y], (0, 0), None, scale, scale)
                 else:
-                    imgArray[x][y] = cv2.resize(imgArray[x][y], (imgArray[0][0].shape[1], imgArray[0][0].shape[0]),
+                    img_array[x][y] = cv2.resize(img_array[x][y], (img_array[0][0].shape[1], img_array[0][0].shape[0]),
                                                 None, scale, scale)
-                if len(imgArray[x][y].shape) == 2: imgArray[x][y] = cv2.cvtColor(imgArray[x][y], cv2.COLOR_GRAY2BGR)
+                if len(img_array[x][y].shape) == 2: img_array[x][y] = cv2.cvtColor(img_array[x][y], cv2.COLOR_GRAY2BGR)
         imageBlank = np.zeros((height, width, 3), np.uint8)
         hor = [imageBlank] * rows
         hor_con = [imageBlank] * rows
         for x in range(0, rows):
-            hor[x] = np.hstack(imgArray[x])
+            hor[x] = np.hstack(img_array[x])
         ver = np.vstack(hor)
     else:
         for x in range(0, rows):
-            if imgArray[x].shape[:2] == imgArray[0].shape[:2]:
-                imgArray[x] = cv2.resize(imgArray[x], (0, 0), None, scale, scale)
+            if img_array[x].shape[:2] == img_array[0].shape[:2]:
+                img_array[x] = cv2.resize(img_array[x], (0, 0), None, scale, scale)
             else:
-                imgArray[x] = cv2.resize(imgArray[x], (imgArray[0].shape[1], imgArray[0].shape[0]), None, scale, scale)
-            if len(imgArray[x].shape) == 2: imgArray[x] = cv2.cvtColor(imgArray[x], cv2.COLOR_GRAY2BGR)
-        hor = np.hstack(imgArray)
+                img_array[x] = cv2.resize(img_array[x], (img_array[0].shape[1], img_array[0].shape[0]), None, scale, scale)
+            if len(img_array[x].shape) == 2: img_array[x] = cv2.cvtColor(img_array[x], cv2.COLOR_GRAY2BGR)
+        hor = np.hstack(img_array)
         ver = hor
     return ver
 
-
+# old funtion for transformation, new to come
 def transform_pixel_to_mm(dist_px):
     x1 = 47
     x2 = 566
@@ -70,11 +68,14 @@ def flip_y_axis(x_coord_cam):
     new_y_coord = round(a * x_coord_cam + b)
     return new_y_coord
 
-
+# sets size of display window
 frameWidth = 640
 frameHeight = 480
 paused = False
-calibrate = input('Do you want to calibrate y/n')
+# Asks wheter user wants to calibrate video settings or not
+calibrate = input('Do you want to calibrate? y/n ')
+
+# Starts video capture with camera 0
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("Error opening video")
@@ -90,23 +91,19 @@ def empty(a):
 
 cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
 
-# Using 'value' pointer is unsafe and deprecated. Use NULL as value pointer. To fetch trackbar value setup callback
-# This is a bug from OpenCV, pay no attention to it.
-# for tape 6.10, 500, 128
-# for plate 1.26, 500, 128
-# for cloth cover background 0.69 10.55 117
+# sets baseline settings that work okay for current set up
 Contrast = 1
 Brightness = 75
 Threshold_1 = 171
 
 if calibrate == 'y':
-    cv2.createTrackbar("Contrast", "Output", 100, 1000, empty)
-    cv2.createTrackbar("Brightness", "Output", 1400, 10000, empty)
-    cv2.createTrackbar("Threshold1", "Output", 155, 255, empty)
+    cv2.createTrackbar("Contrast", "Output", Contrast*100, 1000, empty)
+    cv2.createTrackbar("Brightness", "Output", Brightness*100, 10000, empty)
+    cv2.createTrackbar("Threshold1", "Output", Threshold_1, 255, empty)
 
 print("Press P for Pause\nPress Q for quit\nPress S for Save and export")
 while True:
-    # If not paused - get next
+
     if not paused:
         ret, frame = cap.read()
 
@@ -115,6 +112,7 @@ while True:
         Brightness = float(cv2.getTrackbarPos("Brightness", "Output") / 100)
         Threshold_1 = cv2.getTrackbarPos("Threshold1", "Output")
 
+    # applies the Contrast, Brightness and Threshold settings to the image
     effect = frame.copy()
     effect = cv2.cvtColor(effect, cv2.COLOR_BGR2HSV)
     effect[:, :, 2] = np.clip(Contrast * effect[:, :, 2] + Brightness, 0, 255)
@@ -123,7 +121,7 @@ while True:
     img_gray = cv2.cvtColor(effect, cv2.COLOR_BGR2GRAY)
 
     ret, thresh = cv2.threshold(img_gray, Threshold_1, 255, cv2.THRESH_BINARY)
-
+    # gathers contours and draws them on both a blank image and over the capture video
     contours, hierarchy = cv2.findContours(image=thresh, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
 
     image_copy = effect.copy()
@@ -141,11 +139,6 @@ while True:
     key_press = cv2.waitKey(1)
     if key_press & 0xFF == ord('s'):
         # Make the coordinate arrays
-        '''new_contour = []
-        for i in range(len(hierarchy[0])):
-            if hierarchy[0][i][3] != -1:
-                new_contour.append(contours[i])
-        contours = new_contour'''
         cx_data = []
         cy_data = []
         x = []
@@ -169,12 +162,16 @@ while True:
                 y.append(cnt[i][0][1])
         print("Saving image...")
         cv2.imwrite("Saved_img/test_img.png", imgStack)
-        file_cont = open("./test.txt", "w+")
-        print("Saving Contours...")
+
+        # uncomment if you want to write contour coordinates to a text file
+        """file_cont = open("./test.txt", "w+")
         for i in range(len(x)):
             line = str(x[i]) + "," + str(y[i]) + "\n"
             file_cont.writelines(line)
-        file_cont.close()
+        file_cont.close()"""
+        print("Saving Contours...")
+
+        # Creates the SVG file using the old transform to real world coordinates
         sheet = svg.Drawing('sheet.svg')
         for cnt in contours:
             for i in range(len(cnt) - 1):
@@ -194,5 +191,6 @@ while True:
         break
     elif key_press & 0xFF == ord("p"):
         paused = not paused
+
 cap.release()
 cv2.destroyAllWindows()
