@@ -1,16 +1,15 @@
-from tkinter import * 
+from tkinter import *
 import tkinter.ttk as ttk
 from PIL import Image, ImageTk
-import cv2
 import cv2
 from PIL import Image, ImageTk
 
 img_counter = 0
 
-pathManulab = r"C:/Users/Kristian/Pictures/Manulab/"
-pathConfirmNo = r"C:/Users/Kristian/Pictures/Manulab/"
-pathConfirmYes = r"C:/Users/Kristian/Pictures/Manulab/"
-pathSaveImages = r"C:/Users/Kristian/Python projects/Manulab/learn GUI/"
+pathManulab = r"./"
+pathConfirmNo = r"./"
+pathConfirmYes = r"./"
+pathSaveImages = r"./"
 
 # Starting to read webcam feed
 cam = cv2.VideoCapture(0)
@@ -18,13 +17,11 @@ ret, frame = cam.read()
 if not ret:
     print("failed to grab -Frame")
 
-
 # Making the main window in Tkinter
 mainWindow = Tk()
 mainWindow.title("LUL.Py")
 
-
-img_file = Image.open(pathManulab+"GUIOverlay9.png")
+img_file = Image.open(pathManulab + "GUIOverlay9.png")
 bg = ImageTk.PhotoImage(img_file)
 w = bg.width()
 h = bg.height()
@@ -32,13 +29,11 @@ mainWindow.geometry('%dx%d+0+0' % (w, h))
 labelBg = Label(mainWindow, image=bg)
 labelBg.place(x=0, y=0)
 
-
 # Create a Label to capture the Video frames (this is the live preview)
 lmain = Label(mainWindow)
 lmain.place(x=640, y=150)
 # Capture from camera
 cap = cv2.VideoCapture(0)
-
 
 # Creating a style to modify buttons
 s = ttk.Style()
@@ -62,7 +57,6 @@ def video_stream():
 # This function needs implementation with the other code, 
 # as it currently doesn't do anything with the image
 def confirmYes(parent):
-
     def closeWindow():
         confirmYesWindow.destroy()
         parent.destroy()
@@ -71,7 +65,7 @@ def confirmYes(parent):
     confirmYesWindow = Toplevel()
     # Create background overlay
     bg = PhotoImage(
-        file= pathConfirmYes+"ConfirmYesWindowOverlay.png")
+        file=pathConfirmYes + "ConfirmYesWindowOverlay.png")
     labelBg = Button(confirmYesWindow, image=bg, command=closeWindow)
     labelBg.pack()
     # Scales the window to be the same size as the background image
@@ -81,10 +75,9 @@ def confirmYes(parent):
     # Needs to run mainloop to load images
     confirmYesWindow.mainloop()
 
+
 # Window to confirm image will not be used
 def confirmNo(parent):
-
-
     def closeWindow():
         confirmNoWindow.destroy()
         parent.destroy()
@@ -93,7 +86,7 @@ def confirmNo(parent):
     confirmNoWindow = Toplevel()
     # Create background overlay
     bg = PhotoImage(
-        file = pathConfirmNo+"ConfirmNoWindowOverlay.png")
+        file=pathConfirmNo + "ConfirmNoWindowOverlay.png")
     labelBg = Button(confirmNoWindow, image=bg, command=closeWindow)
     labelBg.pack()
     # Scales the window to be the same size as the background image
@@ -103,14 +96,15 @@ def confirmNo(parent):
     # Needs to run mainloop to load images
     confirmNoWindow.mainloop()
 
+
 # This is activated when the "Webcam 1" button is pressed, currently inactive
 def webcamButtonPressed():
     # This is activated when the "Webcam 1" button is pressed, currently inactive
     # This will need implementing with the other code
     print()
 
+
 def confirmChooseWindow():
-    
     # Toplevel object which will
     # be treated as a new window
     confirmChooseWindow = Toplevel(mainWindow)
@@ -131,6 +125,7 @@ def confirmChooseWindow():
     confirmBtn.pack()
     denyBtn.pack()
 
+
 # Takes screenshot of webcam feed, then asks
 # wether or not to use that image
 def openChooseWindowImage():
@@ -141,11 +136,11 @@ def openChooseWindowImage():
         print("Error: Failed to grab frame")
     elif ret:
         print("Starting (hopefully)")
-    img_name = pathSaveImages+"opencv_frame_{}.png".format(img_counter)
+    img_name = pathSaveImages + "opencv_frame_{}.png".format(img_counter)
 
     # Use this instead if you want to use one file name
     # to make it easier to use that file for something
-    #img_name = "C:/Users/Kristian/Python projects/Manulab/learn GUI/opencv_frame_ss.png"
+    # img_name = "C:/Users/Kristian/Python projects/Manulab/learn GUI/opencv_frame_ss.png"
 
     # Saves the image to the folder, and opens a window to show it
     cv2.imwrite(img_name, frame)
@@ -158,13 +153,11 @@ def openChooseWindowImage():
     confirmChooseWindow()
 
 
-
 # Adding images for buttons
 webcamPhotoRaw = ImageTk.PhotoImage(
-    file=pathManulab+"\webcam.png", master=mainWindow)
+    file=pathManulab + "\webcam.png", master=mainWindow)
 imagePhotoRaw = ImageTk.PhotoImage(
-    file=pathManulab+"landscapeSmall.png", master=mainWindow)
-
+    file=pathManulab + "landscapeSmall.png", master=mainWindow)
 
 # Adding buttons for different functions
 chooseSourceButton = Label(
@@ -174,7 +167,7 @@ chooseSourceButton.place(x=722, y=700)
 webcamButton = ttk.Button(mainWindow, text='Webcam 1', style='my.TButton',
                           image=webcamPhotoRaw, compound=LEFT, command=webcamButtonPressed)
 webcamButtonW = 265
-webcamButton.place(x=(1920-webcamButtonW)/2, y=780)
+webcamButton.place(x=(1920 - webcamButtonW) / 2, y=780)
 imageButton = ttk.Button(mainWindow, text='Image 1', style='my.TButton',
                          image=imagePhotoRaw, compound=LEFT, command=openChooseWindowImage)
 imageButton.place(x=827, y=895)
