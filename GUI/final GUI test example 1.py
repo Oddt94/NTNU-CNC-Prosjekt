@@ -3,13 +3,19 @@ import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 import cv2
 from PIL import Image, ImageTk
+import os
 
 img_counter = 0
 
-pathManulab = r"./"
-pathConfirmNo = r"./"
-pathConfirmYes = r"./"
-pathSaveImages = r"./"
+# Get directory of this file
+pathGUI = os.path.dirname(__file__)
+if pathGUI == "":
+    pathGUI = "."
+
+pathManulab = pathGUI + "/"
+pathConfirmNo = pathManulab
+pathConfirmYes = pathManulab
+pathSaveImages = pathGUI + "/../Saved_img/"
 
 # Starting to read webcam feed
 cam = cv2.VideoCapture(0)
