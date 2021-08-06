@@ -39,7 +39,7 @@ def stackImages(scale, img_array):
 
 
 # old function for transformation, new to come
-def transform_pixel_to_mm(dist_px):
+"""def transform_pixel_to_mm(dist_px):
     x1 = 47
     x2 = 566
     y1 = 0
@@ -69,14 +69,28 @@ def flip_y_axis(x_coord_cam):
     a = (y1 - y2) / (x1 - x2)
     b = y2 - a * x2
     new_y_coord = round(a * x_coord_cam + b)
-    return new_y_coord
+    return new_y_coord"""
 
+
+# New transformation function for camera to cnc coordinates
+def transformation(point, transform_matrix):
+    world_point = cv2.perspectiveTransform(point, transform_matrix)
+    return world_point
+
+
+def transformation_matrix_calculation():
+    # coordinate of reference points in camera coordinates
+    camera_points = np.array([[, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ]])
+    # coordinates of matching points in cnc coordinates
+    cnc_points = np.array([[, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ]])
+    h, status = cv2.findHomography(camera_points, cnc_points)
+    return h
 
 # sets size of display window
 frameWidth = 640
 frameHeight = 480
 paused = False
-# Asks wheter user wants to calibrate video settings or not
+# Asks whether user wants to calibrate video settings or not
 calibrate = input('Do you want to calibrate? y/n ')
 
 # Starts video capture with camera 0
@@ -87,6 +101,7 @@ cap.set(cv2.CAP_PROP_AUTOFOCUS, 0)
 cap.set(cv2.CAP_PROP_BRIGHTNESS, 0)
 cap.set(3, frameWidth)
 cap.set(4, frameHeight)
+h_matrix = transformation_matrix_calculation()
 
 
 def empty(a):
@@ -147,7 +162,7 @@ while True:
         cy_data = []
         x = []
         y = []
-
+        sheet = svg.Drawing('sheet.svg')
         # this for loop iterates through all the contour elements found by openCV
         for cnt in contours:
             M = cv2.moments(cnt)
@@ -162,21 +177,27 @@ while True:
             cy_data.append(cy)
             # Separates out all the x and y coordinates of the contour edges
             for i in range(len(cnt)):
-                x.append(cnt[i][0][0])
-                y.append(cnt[i][0][1])
+                point = transformation(cnt[i], h_matrix)
+                x.append(point[0])
+                y.append(point[1])
+
+            # uncomment if you want to write contour coordinates to a text file
+            """file_cont = open("./test.txt", "w+")
+            for i in range(len(x)):
+                line = str(x[i]) + "," + str(y[i]) + "\n"
+                file_cont.writelines(line)
+            file_cont.close()"""
+
+            for i in range(len(cnt)-1):
+                sheet.add(sheet.line((x[i],y[i]),(x[i+1],y[i+1]), stroke=svg.rgb(0, 0, 0, '%')))
+            sheet.add(sheet.line((x[0], y[0]), (x[-1], y[-1]), stroke=svg.rgb(0, 0, 0, '%')))
+        print("Saving Contours...")
         print("Saving image...")
         cv2.imwrite("Saved_img/test_img.png", imgStack)
 
-        # uncomment if you want to write contour coordinates to a text file
-        """file_cont = open("./test.txt", "w+")
-        for i in range(len(x)):
-            line = str(x[i]) + "," + str(y[i]) + "\n"
-            file_cont.writelines(line)
-        file_cont.close()"""
-        print("Saving Contours...")
 
         # Creates the SVG file using the old transform to real world coordinates
-        sheet = svg.Drawing('sheet.svg')
+        """sheet = svg.Drawing('sheet.svg')
         for cnt in contours:
             for i in range(len(cnt) - 1):
                 sheet.add(sheet.line(
@@ -188,7 +209,7 @@ while True:
             sheet.add(sheet.line(
                 (flip_x_axis(transform_pixel_to_mm(cnt[0][0][1])), flip_y_axis(transform_pixel_to_mm(cnt[0][0][0]))), (
                     flip_x_axis(transform_pixel_to_mm(cnt[-1][0][1])),
-                    flip_y_axis(transform_pixel_to_mm((cnt[-1][0][0])))), stroke=svg.rgb(0, 0, 0, '%')))
+                    flip_y_axis(transform_pixel_to_mm((cnt[-1][0][0])))), stroke=svg.rgb(0, 0, 0, '%')))"""
         sheet.save()
 
 
