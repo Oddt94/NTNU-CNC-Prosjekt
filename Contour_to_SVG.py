@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import svgwrite as svg
 
+
 # function for creating stacked images in one display window
 def stackImages(scale, img_array):
     rows = len(img_array)
@@ -16,7 +17,7 @@ def stackImages(scale, img_array):
                     img_array[x][y] = cv2.resize(img_array[x][y], (0, 0), None, scale, scale)
                 else:
                     img_array[x][y] = cv2.resize(img_array[x][y], (img_array[0][0].shape[1], img_array[0][0].shape[0]),
-                                                None, scale, scale)
+                                                 None, scale, scale)
                 if len(img_array[x][y].shape) == 2: img_array[x][y] = cv2.cvtColor(img_array[x][y], cv2.COLOR_GRAY2BGR)
         imageBlank = np.zeros((height, width, 3), np.uint8)
         hor = [imageBlank] * rows
@@ -29,13 +30,15 @@ def stackImages(scale, img_array):
             if img_array[x].shape[:2] == img_array[0].shape[:2]:
                 img_array[x] = cv2.resize(img_array[x], (0, 0), None, scale, scale)
             else:
-                img_array[x] = cv2.resize(img_array[x], (img_array[0].shape[1], img_array[0].shape[0]), None, scale, scale)
+                img_array[x] = cv2.resize(img_array[x], (img_array[0].shape[1], img_array[0].shape[0]), None, scale,
+                                          scale)
             if len(img_array[x].shape) == 2: img_array[x] = cv2.cvtColor(img_array[x], cv2.COLOR_GRAY2BGR)
         hor = np.hstack(img_array)
         ver = hor
     return ver
 
-# old funtion for transformation, new to come
+
+# old function for transformation, new to come
 def transform_pixel_to_mm(dist_px):
     x1 = 47
     x2 = 566
@@ -68,6 +71,7 @@ def flip_y_axis(x_coord_cam):
     new_y_coord = round(a * x_coord_cam + b)
     return new_y_coord
 
+
 # sets size of display window
 frameWidth = 640
 frameHeight = 480
@@ -97,8 +101,8 @@ Brightness = 75
 Threshold_1 = 171
 
 if calibrate == 'y':
-    cv2.createTrackbar("Contrast", "Output", Contrast*100, 1000, empty)
-    cv2.createTrackbar("Brightness", "Output", Brightness*100, 10000, empty)
+    cv2.createTrackbar("Contrast", "Output", Contrast * 100, 1000, empty)
+    cv2.createTrackbar("Brightness", "Output", Brightness * 100, 10000, empty)
     cv2.createTrackbar("Threshold1", "Output", Threshold_1, 255, empty)
 
 print("Press P for Pause\nPress Q for quit\nPress S for Save and export")
@@ -176,7 +180,9 @@ while True:
         for cnt in contours:
             for i in range(len(cnt) - 1):
                 sheet.add(sheet.line(
-                    (flip_x_axis(transform_pixel_to_mm(cnt[i][0][1])), flip_y_axis(transform_pixel_to_mm(cnt[i][0][0]))), (
+                    (
+                    flip_x_axis(transform_pixel_to_mm(cnt[i][0][1])), flip_y_axis(transform_pixel_to_mm(cnt[i][0][0]))),
+                    (
                         flip_x_axis(transform_pixel_to_mm(cnt[i + 1][0][1])),
                         flip_y_axis(transform_pixel_to_mm((cnt[i + 1][0][0])))), stroke=svg.rgb(0, 0, 0, '%')))
             sheet.add(sheet.line(
