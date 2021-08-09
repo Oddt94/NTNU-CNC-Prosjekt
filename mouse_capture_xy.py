@@ -15,10 +15,7 @@ ret, frame = cap.read()
 
 def click_event(event, x, y, flags, params):
     if event == cv2.EVENT_LBUTTONDOWN:
-        print(x, ' ', y)
-    if event == cv2.EVENT_RBUTTONDOWN:
-        print(x, ' ', y)
-        cv2.imshow('image', cap)
+        print('x:', x, ' ', "y:", y)
 
 
 while True:
