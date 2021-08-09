@@ -82,7 +82,7 @@ def transformation_matrix_calculation():
     # coordinate of reference points in camera coordinates
     camera_points = np.array([[, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ]])
     # coordinates of matching points in cnc coordinates
-    cnc_points = np.array([[, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ], [, ]])
+    cnc_points = np.array([[116, 302], [687, 305], [419, 456], [115, 609], [686, 610], [112, 805], [684, 806], [380, 960], [111, 1110], [682, 1111]])
     h, status = cv2.findHomography(camera_points, cnc_points)
     return h
 

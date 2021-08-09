@@ -2,7 +2,7 @@ import cv2
 
 frameWidth = 640
 frameHeight = 480
-camera_source = 0
+camera_source = 1
 paused = False
 
 cap = cv2.VideoCapture(camera_source)
