@@ -38,53 +38,29 @@ def stackImages(scale, img_array):
     return ver
 
 
-# old function for transformation, new to come
-"""def transform_pixel_to_mm(dist_px):
-    x1 = 47
-    x2 = 566
-    y1 = 0
-    y2 = 1000
-    a = (y1 - y2) / (x1 - x2)
-    b = int(y2 - a * x2)
-    dist_mm = round(a * dist_px + b)
-    return dist_mm
-
-
-def flip_x_axis(y_coord_cam):
-    x1 = 0
-    x2 = 1000
-    y1 = 1000
-    y2 = 0
-    a = (y1 - y2) / (x1 - x2)
-    b = y2 - a * x2
-    new_x_coord = round(a * y_coord_cam + b)
-    return new_x_coord
-
-
-def flip_y_axis(x_coord_cam):
-    x1 = 0
-    x2 = 1500
-    y1 = 0
-    y2 = 1500
-    a = (y1 - y2) / (x1 - x2)
-    b = y2 - a * x2
-    new_y_coord = round(a * x_coord_cam + b)
-    return new_y_coord"""
-
-
-# New transformation function for camera to cnc coordinates
-def transformation(point, transform_matrix):
-    world_point = cv2.perspectiveTransform(point, transform_matrix)
-    return world_point
-
-
 def transformation_matrix_calculation():
     # coordinate of reference points in camera coordinates
-    camera_points = np.array([[487, 382], [484, 83], [406, 225], [327, 383], [324, 86], [227, 382], [223, 88], [145, 246], [71, 384], [65, 90]])
+    camera_points = np.array(
+        [[221, 124], [430, 125], [331, 180], [220, 234], [428, 237], [219, 305], [427, 308], [316, 363], [219, 415],
+         [425, 419]], dtype=np.float32)
     # coordinates of matching points in cnc coordinates
-    cnc_points = np.array([[116, 302], [687, 305], [419, 456], [115, 609], [686, 610], [112, 805], [684, 806], [380, 960], [111, 1110], [682, 1111]])
-    h, status = cv2.findHomography(camera_points, cnc_points)
+    cnc_points = np.array(
+        [[116, 302], [687, 305], [419, 456], [115, 609], [686, 610], [112, 805], [684, 806], [380, 960], [112, 1110],
+         [682, 1111]], dtype=np.float32)
+    h, status = cv2.findHomography(camera_points, cnc_points, method=cv2.RANSAC, ransacReprojThreshold=3.0)
     return h
+
+
+def align_coordinate_systems(image):
+    # flips the image around the y-axis
+    flipped_y_axis = cv2.flip(image, 1)
+    (h, w) = frame.shape[:2]
+    (cX, cY) = (w // 2, h // 2)
+    # rotates the image around the center 90 degrees clockwise and scales it down by 70%
+    M = cv2.getRotationMatrix2D((cX, cY), -90, 0.7)
+    rotated = cv2.warpAffine(flipped_y_axis, M, (w, h))
+    return rotated
+
 
 # sets size of display window
 frameWidth = 640
@@ -93,8 +69,8 @@ paused = False
 # Asks whether user wants to calibrate video settings or not
 calibrate = input('Do you want to calibrate? y/n ')
 
-# Starts video capture with camera 0
-cap = cv2.VideoCapture(0)
+# Starts video capture with camera 1
+cap = cv2.VideoCapture(1)
 if not cap.isOpened():
     print("Error opening video")
 cap.set(cv2.CAP_PROP_AUTOFOCUS, 0)
@@ -111,13 +87,13 @@ def empty(a):
 cv2.namedWindow("Output", flags=cv2.WINDOW_AUTOSIZE)
 
 # sets baseline settings that work okay for current set up
-Contrast = 1
-Brightness = 75
+Contrast = 100
+Brightness = 7500
 Threshold_1 = 171
 
 if calibrate == 'y':
-    cv2.createTrackbar("Contrast", "Output", Contrast * 100, 1000, empty)
-    cv2.createTrackbar("Brightness", "Output", Brightness * 100, 10000, empty)
+    cv2.createTrackbar("Contrast", "Output", Contrast, 1000, empty)
+    cv2.createTrackbar("Brightness", "Output", Brightness, 10000, empty)
     cv2.createTrackbar("Threshold1", "Output", Threshold_1, 255, empty)
 
 print("Press P for Pause\nPress Q for quit\nPress S for Save and export")
@@ -127,16 +103,15 @@ while True:
         ret, frame = cap.read()
 
     if calibrate == 'y':
-        Contrast = float(cv2.getTrackbarPos("Contrast", "Output") / 100)
-        Brightness = float(cv2.getTrackbarPos("Brightness", "Output") / 100)
+        Contrast = float(cv2.getTrackbarPos("Contrast", "Output"))
+        Brightness = float(cv2.getTrackbarPos("Brightness", "Output"))
         Threshold_1 = cv2.getTrackbarPos("Threshold1", "Output")
 
     # applies the Contrast, Brightness and Threshold settings to the image
     effect = frame.copy()
     effect = cv2.cvtColor(effect, cv2.COLOR_BGR2HSV)
-    effect[:, :, 2] = np.clip(Contrast * effect[:, :, 2] + Brightness, 0, 255)
+    effect[:, :, 2] = np.clip((Contrast/100) * effect[:, :, 2] + (Brightness/100), 0, 255)
     effect = cv2.cvtColor(effect, cv2.COLOR_HSV2BGR)
-
     img_gray = cv2.cvtColor(effect, cv2.COLOR_BGR2GRAY)
 
     ret, thresh = cv2.threshold(img_gray, Threshold_1, 255, cv2.THRESH_BINARY)
@@ -158,13 +133,18 @@ while True:
     key_press = cv2.waitKey(1)
     if key_press & 0xFF == ord('s'):
         # Make the coordinate arrays
+        rotated_image = align_coordinate_systems(thresh)
+        corrected_image = cv2.warpPerspective(rotated_image, h_matrix, (1000, 1500))
+        test_image = corrected_image.copy()
+        fixed_contours, hierarchy = cv2.findContours(image=corrected_image, mode=cv2.RETR_TREE,
+                                                     method=cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(image=test_image, contours=fixed_contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
+                         lineType=cv2.LINE_AA)
         cx_data = []
         cy_data = []
-        x = []
-        y = []
         sheet = svg.Drawing('sheet.svg')
         # this for loop iterates through all the contour elements found by openCV
-        for cnt in contours:
+        for cnt in fixed_contours:
             M = cv2.moments(cnt)
             # Finds the centers of all contour objects
             if M['m00'] is None or M['m00'] == 0:
@@ -176,40 +156,26 @@ while True:
             cx_data.append(cx)
             cy_data.append(cy)
             # Separates out all the x and y coordinates of the contour edges
+            x = np.zeros(len(cnt))
+            y = np.zeros(len(cnt))
             for i in range(len(cnt)):
-                point = transformation(cnt[i], h_matrix)
-                x.append(point[0])
-                y.append(point[1])
+                print(cnt[i])
+                x[i] = (cnt[i][0][0])
+                y[i] = (cnt[i][0][1])
 
             # uncomment if you want to write contour coordinates to a text file
-            """file_cont = open("./test.txt", "w+")
+            file_cont = open("./test.txt", "w+")
             for i in range(len(x)):
                 line = str(x[i]) + "," + str(y[i]) + "\n"
                 file_cont.writelines(line)
-            file_cont.close()"""
+            file_cont.close()
 
-            for i in range(len(cnt)-1):
-                sheet.add(sheet.line((x[i],y[i]),(x[i+1],y[i+1]), stroke=svg.rgb(0, 0, 0, '%')))
+            for i in range(len(cnt) - 1):
+                sheet.add(sheet.line((x[i], y[i]), (x[i + 1], y[i + 1]), stroke=svg.rgb(0, 0, 0, '%')))
             sheet.add(sheet.line((x[0], y[0]), (x[-1], y[-1]), stroke=svg.rgb(0, 0, 0, '%')))
         print("Saving Contours...")
         print("Saving image...")
-        cv2.imwrite("Saved_img/test_img.png", imgStack)
-
-
-        # Creates the SVG file using the old transform to real world coordinates
-        """sheet = svg.Drawing('sheet.svg')
-        for cnt in contours:
-            for i in range(len(cnt) - 1):
-                sheet.add(sheet.line(
-                    (
-                    flip_x_axis(transform_pixel_to_mm(cnt[i][0][1])), flip_y_axis(transform_pixel_to_mm(cnt[i][0][0]))),
-                    (
-                        flip_x_axis(transform_pixel_to_mm(cnt[i + 1][0][1])),
-                        flip_y_axis(transform_pixel_to_mm((cnt[i + 1][0][0])))), stroke=svg.rgb(0, 0, 0, '%')))
-            sheet.add(sheet.line(
-                (flip_x_axis(transform_pixel_to_mm(cnt[0][0][1])), flip_y_axis(transform_pixel_to_mm(cnt[0][0][0]))), (
-                    flip_x_axis(transform_pixel_to_mm(cnt[-1][0][1])),
-                    flip_y_axis(transform_pixel_to_mm((cnt[-1][0][0])))), stroke=svg.rgb(0, 0, 0, '%')))"""
+        cv2.imwrite("Saved_img/test_img.png", corrected_image)
         sheet.save()
 
 

@@ -21,8 +21,12 @@ def click_event(event, x, y, flags, params):
 while True:
     if not paused:
         ret, frame = cap.read()
-
-    cv2.imshow('output', frame)
+        flipped = cv2.flip(frame, 1)
+        (h, w) = frame.shape[:2]
+        (cX, cY) = (w // 2, h // 2)
+        M = cv2.getRotationMatrix2D((cX, cY), -90, 0.7)
+        rotated = cv2.warpAffine(flipped, M, (w, h))
+    cv2.imshow('output', rotated)
     cv2.setMouseCallback('output', click_event)
     key_press = cv2.waitKey(1)
 
