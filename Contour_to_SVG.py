@@ -159,7 +159,6 @@ while True:
             x = np.zeros(len(cnt))
             y = np.zeros(len(cnt))
             for i in range(len(cnt)):
-                print(cnt[i])
                 x[i] = (cnt[i][0][0])
                 y[i] = (cnt[i][0][1])
 
