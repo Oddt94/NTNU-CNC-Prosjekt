@@ -54,12 +54,13 @@ def transformation_matrix_calculation():
 def align_coordinate_systems(image):
     # flips the image around the y-axis
     flipped_y_axis = cv2.flip(image, 1)
-    (h, w) = frame.shape[:2]
+    (h, w) = flipped_y_axis.shape[:2]
     (cX, cY) = (w // 2, h // 2)
     # rotates the image around the center 90 degrees clockwise and scales it down by 70%
-    M = cv2.getRotationMatrix2D((cX, cY), -90, 0.7)
+    M = cv2.getRotationMatrix2D((cX, cY), 90, 0.7)
     rotated = cv2.warpAffine(flipped_y_axis, M, (w, h))
-    return rotated
+    flipped_y_axis = cv2.flip(rotated, 1)
+    return flipped_y_axis
 
 
 # sets size of display window
@@ -134,7 +135,7 @@ while True:
     if key_press & 0xFF == ord('s'):
         # Make the coordinate arrays
         rotated_image = align_coordinate_systems(thresh)
-        corrected_image = cv2.warpPerspective(rotated_image, h_matrix, (1000, 1500))
+        corrected_image = cv2.warpPerspective(rotated_image, h_matrix, (800, 1300))
         test_image = corrected_image.copy()
         fixed_contours, hierarchy = cv2.findContours(image=corrected_image, mode=cv2.RETR_TREE,
                                                      method=cv2.CHAIN_APPROX_SIMPLE)
@@ -144,7 +145,11 @@ while True:
         cy_data = []
         sheet = svg.Drawing('sheet.svg')
         # this for loop iterates through all the contour elements found by openCV
+        file_cont = open("./test.txt", "w+")
+        index = 1
         for cnt in fixed_contours:
+            file_cont.write("Contour object nr. {index}".format(index = index))
+            index += 1
             M = cv2.moments(cnt)
             # Finds the centers of all contour objects
             if M['m00'] is None or M['m00'] == 0:
@@ -163,11 +168,11 @@ while True:
                 y[i] = (cnt[i][0][1])
 
             # uncomment if you want to write contour coordinates to a text file
-            file_cont = open("./test.txt", "w+")
+
             for i in range(len(x)):
                 line = str(x[i]) + "," + str(y[i]) + "\n"
                 file_cont.writelines(line)
-            file_cont.close()
+
 
             for i in range(len(cnt) - 1):
                 sheet.add(sheet.line((x[i], y[i]), (x[i + 1], y[i + 1]), stroke=svg.rgb(0, 0, 0, '%')))
@@ -176,6 +181,7 @@ while True:
         print("Saving image...")
         cv2.imwrite("Saved_img/test_img.png", corrected_image)
         sheet.save()
+        file_cont.close()
 
 
     elif key_press & 0xFF == ord('q') or key_press == 27:
