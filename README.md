@@ -11,8 +11,11 @@ Current state of the project:
 - Converting svg files to readable gcode
 
 Problems and what is left of the project:
-- Building in auto nesting into the software, currently using external resources to accomplish task, this is a source of an offset that we have not resolved yet
+- Building in auto nesting into the software, currently using external resources to accomplish task, 
+  this is a possible source of a y-directional offset that we have not resolved yet, so we are hoping that changing to internal nesting will solve this issue
+  (see https://github.com/Ultimaker/pynest2d for a potential solution)
 - Creating an automated way of reading in parts from both dxf and svg files from a shared folder
+  these parts also need to be scaled to be scaled correctly in mm to fit into the sheet model.
 - Transferring gcode to CNC machine system (an example file for transferring gcode over serial to a grbl enable machine is included)
 
 Suggested features/benefits:
