@@ -148,7 +148,7 @@ while True:
         file_cont = open("./test.txt", "w+")
         index = 1
         for cnt in fixed_contours:
-            file_cont.write("Contour object nr. {index}".format(index = index))
+            file_cont.write(f"Contour object nr. {index} \n")
             index += 1
             M = cv2.moments(cnt)
             # Finds the centers of all contour objects
@@ -160,6 +160,7 @@ while True:
                 cy = int(M['m01'] / M['m00'])
             cx_data.append(cx)
             cy_data.append(cy)
+
             # Separates out all the x and y coordinates of the contour edges
             x = np.zeros(len(cnt))
             y = np.zeros(len(cnt))
