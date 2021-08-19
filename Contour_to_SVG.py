@@ -111,7 +111,7 @@ while True:
     # applies the Contrast, Brightness and Threshold settings to the image
     effect = frame.copy()
     effect = cv2.cvtColor(effect, cv2.COLOR_BGR2HSV)
-    effect[:, :, 2] = np.clip((Contrast/100) * effect[:, :, 2] + (Brightness/100), 0, 255)
+    effect[:, :, 2] = np.clip((Contrast / 100) * effect[:, :, 2] + (Brightness / 100), 0, 255)
     effect = cv2.cvtColor(effect, cv2.COLOR_HSV2BGR)
     img_gray = cv2.cvtColor(effect, cv2.COLOR_BGR2GRAY)
 
@@ -173,17 +173,16 @@ while True:
             for i in range(len(x)):
                 line = str(x[i]) + "," + str(y[i]) + "\n"
                 file_cont.writelines(line)
-
-
-            for i in range(len(cnt) - 1):
-                sheet.add(sheet.line((x[i], y[i]), (x[i + 1], y[i + 1]), stroke=svg.rgb(0, 0, 0, '%')))
+            # Halving the amount of points used to draw the shapes to reduce unnecessary data, if shapes are
+            # distorted remove the multiplier
+            for i in range(round((len(cnt) - 1) / 2)):
+                sheet.add(sheet.line((x[i*2], y[i*2]), (x[(i + 1)*2], y[(i + 1)*2]), stroke=svg.rgb(0, 0, 0, '%')))
             sheet.add(sheet.line((x[0], y[0]), (x[-1], y[-1]), stroke=svg.rgb(0, 0, 0, '%')))
         print("Saving Contours...")
         print("Saving image...")
         cv2.imwrite("Saved_img/test_img.png", corrected_image)
         sheet.save()
         file_cont.close()
-
 
     elif key_press & 0xFF == ord('q') or key_press == 27:
         print("Quitting...")
