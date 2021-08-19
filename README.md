@@ -13,7 +13,7 @@ Current state of the project:
 Problems and what is left of the project:
 - Building in auto nesting into the software, currently using external resources to accomplish task, this is a source of an offset that we have not resolved yet
 - Creating an automated way of reading in parts from both dxf and svg files from a shared folder
-- Transferring gcode to CNC machine system
+- Transferring gcode to CNC machine system (an example file for transferring gcode over serial to a grbl enable machine is included)
 
 Suggested features/benefits:
 1. Simplifies the use of left over materials. Non-rectangular plates with holes and cut-outs can easily be used.
